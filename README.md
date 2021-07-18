@@ -12,8 +12,8 @@ The total number of prerequisites should count each [toTake, required] as 1
 
 ## Executables ##
 * Clone the repository
-* Compile it (eg. "g++ main.cpp -o {executable name}")
-* Run (eg. "./{executable name}")
+* Compile it (eg. `g++ main.cpp -o {executable name}`)
+* Run (eg. `./{executable name}`)
 * Enter all inputs printed on screen
 
 ## Algorithms/Data Structure ##
