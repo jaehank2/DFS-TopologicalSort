@@ -19,5 +19,11 @@ The total number of prerequisites should count each [toTake, required] as 1
 ## Algorithms/Data Structure ##
 * Graph with adjacency list
 * DFS with topological sort
+* Cycle Detection through backward edge
 * Priority queue
 * Lambda expression
+
+## Sample Output
+* Case with cycle (no return value)
+
+* Case with no cycle
