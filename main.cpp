@@ -51,34 +51,31 @@ public:
         unordered_set<int> vis;
         unordered_set<int> root;
         
+        
         Graph g(numCourses);
-        for (int i=0; i<prerequisites.size(); i++){
-            root.insert(prerequisites[i][0]);
+        for (int i=0; i<prerequisites.size(); i++){  
             g.addEdge(prerequisites[i][0], prerequisites[i][1]);
         }
         
-        bool srcEmpty = true;
-        
-        for (int i=0; i<prerequisites.size(); i++){
-            if (root.count(prerequisites[i][1])){
-                root.erase(prerequisites[i][1]);    // get root nodes
-            }
-            if (g.adj[prerequisites[i][1]].empty()){    // leaf nodes
-                srcEmpty = false;
-            }
-        }
-        
-        if (srcEmpty) return answer;
+        // topo requires DAG and DAG must have at least one source and one sink
         int time = 0;
+        vector<int> pre(numCourses, 0);
         vector<int> post(numCourses, 0);
+        bool backwardEdge = false;
 
         auto cmp = [](pair<int, int> a, pair<int, int> b){
             return a.second > b.second;
         };
         
+        /// @brief pq - to return topological sort in asc order
         priority_queue<pair<int, int>, vector<pair<int, int>>, decltype(cmp)> pq(cmp);
-        for (auto it=root.begin(); it != root.end(); it++){
-            DFS(g, *it, time, post, vis);
+        for (int i=0; i<numCourses; i++){
+            if (!vis.count(i)){
+                DFS(g, i, time, pre, post, vis, backwardEdge);
+                if (backwardEdge == true){
+                    return answer;
+                }
+            }
         }
         
         for (int i=0; i<post.size(); i++){
@@ -99,15 +96,29 @@ public:
      * @brief DFS for topological sort
      * 
      */
-    void DFS(Graph& g, int src, int& time, vector<int>& post, unordered_set<int>& vis){
+    // usually a->b means a only then b (b depends on a) and topo with post time in desc order
+    // but for this we had in reverse (a depends on b) so topo in asc order
+    void DFS(Graph& g, int src, int& time, vector<int>& pre, vector<int>& post, unordered_set<int>& vis, bool& flag){
         vis.insert(src);
-        time++;
+        pre[src] = time++;
         for (int i=0; i<g.adj[src].size(); i++){
+            int temp = g.adj[src][i];
             if (!vis.count(g.adj[src][i])){
-                DFS(g, g.adj[src][i], time, post, vis);
+                DFS(g, g.adj[src][i], time, pre, post, vis, flag);
+            }
+            else{
+                // backward edge = cycle
+                if (post[g.adj[src][i]] == 0){  // meaning g.adj[src][i] has been visited again while it is still being process (hence post==0)
+                    cout << endl;
+                    cout << "****************" << endl;
+                    cout << "ERROR: resolve dependency issue for course " << g.adj[src][i] << endl;
+                    cout << "****************" << endl;
+                    flag = true;
+                    return;
+                }
             }
         }
-        post[src] = time++;
+         post[src] = time++;
     }
 };
 
@@ -136,12 +147,18 @@ int main(){
     vector<int> answer = s.findSchedule(numCourses, prerequisites);
 
     cout << endl;
-    cout << "The ordering of your schedule should be: " << endl;
-    for (int i=0; i<answer.size(); i++){
-        cout << answer[i] << " ";
+    if (answer.size() == 0){
+        cout << "no valid ordering" << endl;
     }
-    cout << endl;
-    cout << "**Note that the answer may not be unique" << endl;
+    else {
+        cout << "The ordering of your schedule should be: " << endl;
+        for (int i=0; i<answer.size(); i++){
+            cout << answer[i] << " ";
+        }
+        cout << endl;
+        cout << "**Note that the answer may not be unique" << endl;
+    }
+    
 
     return 0;
 }
