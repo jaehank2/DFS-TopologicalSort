@@ -25,6 +25,8 @@ The total number of prerequisites should count each [toTake, required] as 1
 
 ## Sample Output
 * Case with cycle (no return value)
-  <img src="misc/case1.PNG" width="400" height="400">
+
+  <img src="misc/case1.png" width="400" height="300">
 * Case with no cycle
-  <img src="misc/case2.PNG" width="400" height="400">
+
+  <img src="misc/case2.png" width="400" height="300">
