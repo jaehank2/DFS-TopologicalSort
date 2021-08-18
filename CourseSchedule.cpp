@@ -67,6 +67,19 @@ vector<int> CourseSchedule::findSchedule(){
     return answer;
 }
 
+
+/**
+ * @brief performs DFS while keeping track of 'time' to output topological ordering
+ * 
+ * @param g - graph on which DFS is performed
+ * @param src - source node/current node in graph
+ * @param time - counter to account for when a node is first and last visited
+ * @param pre - vector keeping track of when nodes are first visited
+ * @param post - vector keeping track of when nodes are last visited
+ * @param vis - set of visited nodes
+ * @param flag - boolean to signify existence of backward edge
+ * 
+ */
 void CourseSchedule::DFS(Graph& g, int src, int& time, vector<int>& pre, vector<int>& post, unordered_set<int>& vis, bool& flag){
     vis.insert(src);
     pre[src] = time++;
